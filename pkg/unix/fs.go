@@ -7,18 +7,12 @@ import (
 
 func PathExist(pathname string) bool {
 	_, err := os.Stat(pathname)
-	if err == nil {
-		return true
-	}
-	fmt.Println(err)
-	return false
+	return err == nil
 }
 
 func Mkdir(pathname string, permission os.FileMode) {
 	if err := os.Mkdir(pathname, permission); err != nil {
-		if os.IsExist(err) {
-			fmt.Println("Directory already exists.")
-		} else {
+		if !os.IsExist(err) {
 			fmt.Println("Error:", err)
 		}
 	} else {

@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"ryvst/internal/app"
+	"ryvst/pkg/collection"
 	"ryvst/pkg/unix"
 	"ryvst/version"
 )
@@ -23,4 +24,7 @@ func main() {
 		fmt.Println("Creating directory", config)
 		unix.Mkdir(config, 0o700)
 	}
+	lists := collection.Scan(config)
+	fmt.Println("Found:", len(lists), "collections")
+	fmt.Println(lists)
 }
