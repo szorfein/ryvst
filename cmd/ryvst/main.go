@@ -7,14 +7,12 @@ import (
 	"ryvst/internal/app"
 	"ryvst/pkg/collection"
 	"ryvst/pkg/unix"
-	"ryvst/version"
 )
 
 func main() {
-	v := version.Display()
+	v := app.Version()
 	fmt.Printf("=== Ryvst %s ===\n", v)
 	config := app.Show_path()
-	fmt.Println(config)
 	if config == "" {
 		fmt.Println("No config found")
 		os.Exit(1)
@@ -27,4 +25,7 @@ func main() {
 	lists := collection.Scan(config)
 	fmt.Println("Found:", len(lists), "collections")
 	fmt.Println(lists)
+	for _, list := range lists {
+		collection.Read(config, list)
+	}
 }

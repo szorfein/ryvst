@@ -19,3 +19,11 @@ func Mkdir(pathname string, permission os.FileMode) {
 		fmt.Println("Directory created successfully.")
 	}
 }
+
+func OpenFile(pathname string) *os.File {
+	file, err := os.Open(pathname)
+	if err != nil {
+		fmt.Println("err collection.Read", err)
+	}
+	return file
+}

@@ -39,7 +39,7 @@ go build -o ryvst cmd/ryvst/main.go
 
 #### Need ohmyzsh?
 
-[ohmyzsh](https://github.com/ohmyzsh) can be installed in `$HOME/.ohmyzsh`, plugins in `$HOME/.ohmyzsh/custom`, so create a new collections `zsh.yml`: $EDITOR ~/.config/ryvst/zsh.yml
+[ohmyzsh](https://github.com/ohmyzsh) can be installed in `$HOME/.ohmyzsh`, plugins in `$HOME/.ohmyzsh/custom/plugins`, so create a new collections `zsh.yml`: $EDITOR ~/.config/ryvst/zsh.yml
 
 ```yml
 every_time: 1d
