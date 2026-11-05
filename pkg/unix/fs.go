@@ -20,6 +20,13 @@ func Mkdir(pathname string, permission os.FileMode) {
 	}
 }
 
+func MkdirP(pathname string, permission os.FileMode) {
+	if !PathExist(pathname) {
+		fmt.Println("Creating directory", pathname)
+		Mkdir(pathname, permission)
+	}
+}
+
 func OpenFile(pathname string) *os.File {
 	file, err := os.Open(pathname)
 	if err != nil {

@@ -39,7 +39,9 @@ go build -o ryvst cmd/ryvst/main.go
 
 #### Need ohmyzsh?
 
-[ohmyzsh](https://github.com/ohmyzsh) can be installed in `$HOME/.ohmyzsh`, plugins in `$HOME/.ohmyzsh/custom/plugins`, so create a new collections `zsh.yml`: $EDITOR ~/.config/ryvst/zsh.yml
+[ohmyzsh](https://github.com/ohmyzsh) can be installed in `$HOME/.ohmyzsh`, plugins in `$HOME/.ohmyzsh/custom/plugins`, so create a new collections `zsh.yml`:
+
+    $EDITOR ~/.config/ryvst/zsh.yml
 
 ```yml
 every_time: 1d
@@ -55,4 +57,4 @@ collections:
     to_dest: .oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 ```
 
-`to_dest` is relative to `$HOME`, `name` is the name of the file after the download. All the files are extracted in the given order, so place `ohmyzsh` first.
+`to_dest` is relative to `$HOME`, `name` is the name of the file after the download. All the files are extracted/moved in the given order, so place `ohmyzsh` first.
