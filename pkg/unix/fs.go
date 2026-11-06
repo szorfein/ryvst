@@ -3,6 +3,8 @@ package unix
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 func PathExist(pathname string) bool {
@@ -33,4 +35,11 @@ func OpenFile(pathname string) *os.File {
 		fmt.Println("err collection.Read", err)
 	}
 	return file
+}
+
+func CreateCacheDir(cachedir string, filename string) string {
+	s := strings.Split(filename, ".yml")
+	n := filepath.Join(cachedir, s[0])
+	MkdirP(n, 0o700)
+	return n
 }

@@ -4,10 +4,14 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"ryvst/pkg/colour"
 )
 
 func Scan(directory string) []string {
 	var allTheYaml []string
+	colour.Info("Scanning collections from %s\n", directory)
+
 	err := filepath.WalkDir(directory, func(path string, d os.DirEntry, err error) error {
 		match, _ := filepath.Match("*.yml", d.Name())
 		if match { // true if match
@@ -18,5 +22,7 @@ func Scan(directory string) []string {
 	if err != nil {
 		fmt.Println("Got Error:", err)
 	}
+
+	colour.Info("Found %d collections\n", len(allTheYaml))
 	return allTheYaml
 }

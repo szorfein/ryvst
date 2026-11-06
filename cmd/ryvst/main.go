@@ -17,15 +17,14 @@ func main() {
 		fmt.Println("No config found")
 		os.Exit(1)
 	}
-	fmt.Printf("Configuraton located at %s\n", config)
+	cacheDir := os.Getenv("HOME") + "/.cache/ryvst"
 	unix.MkdirP(config, 0o700)
+	unix.MkdirP(cacheDir, 0o700)
 	lists := collection.Scan(config)
-	fmt.Println("Found:", len(lists), "collections")
-	fmt.Println(lists)
 	for _, list := range lists {
-		collection.Read(config, list)
+		c := collection.Read(config, list)
+		collectionCacheDir := unix.CreateCacheDir(cacheDir, list)
+		colour.Info("Using cache %s\n", collectionCacheDir)
+		collection.CompareTime(collectionCacheDir, c.EveryTime)
 	}
-	colour.RandPrintf(">")
-	colour.RandPrintf(">")
-	fmt.Println()
 }

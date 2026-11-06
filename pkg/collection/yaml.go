@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"ryvst/pkg/colour"
 	"ryvst/pkg/unix"
 
 	"go.yaml.in/yaml/v4"
@@ -22,9 +23,9 @@ type Config struct {
 	Tasks     []Tasks
 }
 
-func Read(dir string, filename string) {
+func Read(dir string, filename string) Config {
 	fullpath := filepath.Join(dir, filename)
-	fmt.Println(">> Loading:", fullpath)
+	colour.Info("Loading collection %s\n", fullpath)
 	file := unix.OpenFile(fullpath)
 	defer func() {
 		if err := file.Close(); err != nil {
@@ -45,4 +46,5 @@ func Read(dir string, filename string) {
 	}
 	fmt.Printf("YAML content: %+v\n", config)
 	fmt.Printf("tasks len:%d\n", len(config.Tasks))
+	return config
 }
