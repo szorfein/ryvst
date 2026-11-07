@@ -5,7 +5,7 @@ tasks:
     to_dest: .ohmyzsh
   - name: zsh-autosuggestions.zip
     url: https://github.com/zsh-users/zsh-autosuggestions/archive/refs/heads/master.zip
-    to_dest: .oh-my-zsh/custom/plugins/zsh-autosuggestions
+    to_dest: .ohmyzsh/custom/plugins/zsh-autosuggestions
   - name: zsh-syntax-highlighting.zip
     url: https://github.com/zsh-users/zsh-syntax-highlighting/archive/refs/heads/master.zip
-    to_dest: .oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+    to_dest: .ohmyzsh/custom/plugins/zsh-syntax-highlighting

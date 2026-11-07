@@ -51,10 +51,10 @@ collections:
     to_dest: .ohmyzsh
   - name: zsh-autosuggestions.tar.gz
     url: https://github.com/zsh-users/zsh-autosuggestions/archive/refs/heads/master.tar.gz
-    to_dest: .oh-my-zsh/custom/plugins/zsh-autosuggestions
+    to_dest: .ohmyzsh/custom/plugins/zsh-autosuggestions
   - name: zsh-syntax-highlighting.tar.gz
     url: https://github.com/zsh-users/zsh-syntax-highlighting/archive/refs/heads/master.tar.gz
-    to_dest: .oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+    to_dest: .ohmyzsh/custom/plugins/zsh-syntax-highlighting
 ```
 
 `to_dest` is relative to `$HOME`, `name` is the name of the file after the download. All the files are extracted/moved in the given order, so place `ohmyzsh` first.
