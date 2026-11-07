@@ -45,6 +45,5 @@ func Read(dir string, filename string) Config {
 		fmt.Println("err collection.Unmarshal", err)
 	}
 	fmt.Printf("YAML content: %+v\n", config)
-	fmt.Printf("tasks len:%d\n", len(config.Tasks))
 	return config
 }

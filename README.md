@@ -45,7 +45,7 @@ go build -o ryvst cmd/ryvst/main.go
 
 ```yml
 every_time: 1d
-collections:
+tasks:
   - name: ohmyzsh.zip
     url: https://github.com/ohmyzsh/ohmyzsh/archive/refs/heads/master.zip
     to_dest: .ohmyzsh

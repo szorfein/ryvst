@@ -23,7 +23,6 @@ func main() {
 		if !collection.CompareTime(list, c.EveryTime) { // should return true or false, most logic?
 			continue
 		}
-		fmt.Println("Continious flow...")
-		//collection.Maker(c.Tasks)
+		collection.Maker(list, c.Tasks)
 	}
 }

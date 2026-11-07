@@ -14,15 +14,15 @@ import (
 // TODO: move some parts in internal/
 var workdir = os.Getenv("HOME") + "/.cache/ryvst"
 
-func CreateCacheDir(cachedir string, filename string) string {
+func CreateCacheDir(filename string) string {
 	s := strings.Split(filename, ".yml")
-	n := filepath.Join(cachedir, s[0])
+	n := filepath.Join(workdir, s[0])
 	unix.MkDAllP(n, 0o700)
 	return n
 }
 
 func CompareTime(collection string, everytime time.Duration) bool {
-	cacheDir := CreateCacheDir(workdir, collection)
+	cacheDir := CreateCacheDir(collection)
 
 	// TODO
 	// 1. Should load cacheDir/last-run.yml, return false if no exist
