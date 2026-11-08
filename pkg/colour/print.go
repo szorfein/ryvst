@@ -46,8 +46,9 @@ func RandPrintf(msg string, options ...string) {
 	fmt.Printf("%s%s%s", coloursArray[r], msg, allColors["reset"])
 }
 
-func Info(msg string, data ...any) {
-	RandPrintf(">")
-	RandPrintf("> ")
-	fmt.Printf(msg, data...)
+func Info(nb int, msg string, data ...any) {
+	for range nb {
+		RandPrintf(">")
+	}
+	fmt.Printf(" "+msg, data...)
 }

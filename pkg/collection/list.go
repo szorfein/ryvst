@@ -10,7 +10,7 @@ import (
 
 func Scan(directory string) []string {
 	var allTheYaml []string
-	colour.Info("Scanning collections from %s\n", directory)
+	colour.Info(2, "Scanning collections from %s\n", directory)
 
 	err := filepath.WalkDir(directory, func(path string, d os.DirEntry, err error) error {
 		match, _ := filepath.Match("*.yml", d.Name())
@@ -23,6 +23,6 @@ func Scan(directory string) []string {
 		fmt.Println("Got Error:", err)
 	}
 
-	colour.Info("Found %d collections\n", len(allTheYaml))
+	colour.Info(3, "Found %d collections\n", len(allTheYaml))
 	return allTheYaml
 }

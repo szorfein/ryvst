@@ -20,4 +20,6 @@ func Maker(collection string, tasks []Tasks) {
 
 		download.Grab(task.Url, f) // 2, TODO with goroutine
 	}
+	GenHashes(collection, c, tasks) // 3, TODO with goroutine
+	ApplyTimeNow(c)                 // 4
 }

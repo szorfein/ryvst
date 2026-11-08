@@ -3,6 +3,7 @@ package collection
 import (
 	"fmt"
 	"io"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -25,7 +26,7 @@ type Config struct {
 
 func Read(dir string, filename string) Config {
 	fullpath := filepath.Join(dir, filename)
-	colour.Info("Loading collection %s\n", fullpath)
+	colour.Info(2, "Loading collection %s\n", fullpath)
 	file := unix.OpenFile(fullpath)
 	defer func() {
 		if err := file.Close(); err != nil {
@@ -42,7 +43,8 @@ func Read(dir string, filename string) Config {
 	}
 	err = yaml.Unmarshal(data, &config)
 	if err != nil {
-		fmt.Println("err collection.Unmarshal", err)
+		fmt.Println("Err collection.Unmarshal", err)
+		os.Exit(1)
 	}
 	fmt.Printf("YAML content: %+v\n", config)
 	return config

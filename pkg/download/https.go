@@ -11,7 +11,7 @@ import (
 )
 
 func Grab(url string, dest string) {
-	colour.Info("Downloading %s...\n", url)
+	colour.Info(4, "Downloading %s...\n", url)
 	// TODO: http.Get don't have timeout
 	// should we prefer resp, err := http.NewRequest(http.MethodGet, url, nil) ?
 	// https://www.gofaq.org/en/how-to-read-an-http-response-body-in-go/
@@ -26,8 +26,8 @@ func Grab(url string, dest string) {
 		}()
 	}
 	if err != nil {
-		fmt.Println(err)
-		return
+		fmt.Println("http.Get", err)
+		os.Exit(1)
 	}
 	file, err := os.Create(dest)
 	if err != nil {
@@ -41,5 +41,5 @@ func Grab(url string, dest string) {
 			return
 		}
 	}()
-	colour.Info("%s | %d\n", dest, size)
+	colour.Info(4, "%s | %d\n", dest, size)
 }

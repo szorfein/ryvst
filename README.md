@@ -44,7 +44,7 @@ go build -o ryvst cmd/ryvst/main.go
     $EDITOR ~/.config/ryvst/zsh.yml
 
 ```yml
-every_time: 1d
+every_time: 24h
 tasks:
   - name: ohmyzsh.zip
     url: https://github.com/ohmyzsh/ohmyzsh/archive/refs/heads/master.zip
