@@ -1,6 +1,7 @@
 package collection
 
 import (
+	"log"
 	"path/filepath"
 
 	"ryvst/pkg/download"
@@ -13,13 +14,17 @@ func Maker(collection string, tasks []Tasks) {
 	// 1. If a SIGNATURE file is set and cacheDir/hashes.yml exist, download the sig file and check if need to download
 	// 2. Downloads or Skip the file
 	// 3. Generate hash and save them to cacheDir/hashes.yml
-	// 4. Update cacheDir/last-run.yml
-	// 5. Move or Extract to the right path Tasks.To_dest depend of this type file (rar, zip, ttf...)
+	// 4. Move or Extract to the right path Tasks.To_dest depend of this type file (rar, zip, ttf...)
+	// 5. Update cacheDir/last-run.yml
 	for _, task := range tasks {
 		f := filepath.Join(c, task.Name)
 
 		download.Grab(task.Url, f) // 2, TODO with goroutine
 	}
-	GenHashes(collection, c, tasks) // 3, TODO with goroutine
-	ApplyTimeNow(c)                 // 4
+	GenHashes(collection, c, tasks)     // 3, TODO with goroutine, Save them, Maybe in YAML or JSON ?
+	err := ToDest(collection, c, tasks) // 4
+	if err != nil {
+		log.Fatal(err)
+	}
+	ApplyTimeNow(c) // 5
 }

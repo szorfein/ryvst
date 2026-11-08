@@ -1,5 +1,6 @@
-## ALPHA, 0.7.0
+## ALPHA, 0.8.0
 
+- Can Uncompress Zip file
 - Add examples at [/examples](https://github.com/szorfein/ryvst/tree/main/examples), can be copied under `$HOME/.config/ryvst/`
 - Better README
 - [8ad3ff0](https://github.com/szorfein/ryvst/commit/8ad3ff06a984a23a7ad0b1c3fad1be9deef71d9a), Colorize Stdout

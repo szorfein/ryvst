@@ -11,7 +11,7 @@ import (
 )
 
 func Grab(url string, dest string) {
-	colour.Info(4, "Downloading %s...\n", url)
+	colour.Info(3, "Downloading %s...\n", url)
 	// TODO: http.Get don't have timeout
 	// should we prefer resp, err := http.NewRequest(http.MethodGet, url, nil) ?
 	// https://www.gofaq.org/en/how-to-read-an-http-response-body-in-go/
