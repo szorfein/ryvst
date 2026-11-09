@@ -68,7 +68,7 @@ func GenHashes(collection string, cachedir string, tasks []Tasks) {
 func ApplyTimeNow(cacheDir string) {
 	now := time.Now()
 	p := filepath.Join(cacheDir, "last.txt")
-	colour.Info(2, "Record Time.Now %s for %s\n", now.String(), cacheDir)
+	colour.Info(3, "Record Time.Now %s for %s\n", now.String(), cacheDir)
 
 	file, err := os.OpenFile(p, os.O_CREATE|os.O_WRONLY, 0o600)
 	if err != nil {

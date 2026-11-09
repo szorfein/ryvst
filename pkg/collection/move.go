@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"ryvst/pkg/colour"
 	"ryvst/pkg/unix"
 )
 
@@ -41,7 +42,7 @@ func ToDest(collection string, cacheDir string, tasks []Tasks) error {
 		mimefile := MimeDetect(fp)
 		switch mimefile {
 		case "application/zip":
-			fmt.Printf("Moving %s to %s\n", fp, td)
+			colour.Info(3, "Extracting %s to %s\n", fp, td)
 			err := unix.Unzip(fp, td)
 			if err != nil {
 				return err

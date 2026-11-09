@@ -14,8 +14,6 @@ import (
 )
 
 func Unzip(source string, dest string) error {
-	fmt.Println("Unzipping", source, "...")
-
 	// 1. Open the zip file
 	reader, err := zip.OpenReader(source)
 	if err != nil {
