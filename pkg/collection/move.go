@@ -43,10 +43,17 @@ func ToDest(collection string, cacheDir string, tasks []Tasks) error {
 		td := filepath.Join(os.Getenv("HOME"), task.ToDest)
 
 		mimefile := MimeDetect(fp)
+		//fmt.Println("MIMETYPE", mimefile)
 		switch mimefile {
 		case "application/zip":
 			colour.Info(3, "Extracting %s to %s\n", fp, td)
 			err := unix.Unzip(fp, td)
+			if err != nil {
+				return err
+			}
+		case "font/ttf":
+			colour.Info(3, "Moving %s to %s\n", fp, td)
+			err := unix.CopyFile(fp, td)
 			if err != nil {
 				return err
 			}

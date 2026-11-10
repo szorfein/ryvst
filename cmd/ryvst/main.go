@@ -32,5 +32,10 @@ func main() {
 			continue
 		}
 		collection.Maker(list, c.Tasks, done)
+		err := collection.RunCommand(c.Execute)
+		if err != nil {
+			fmt.Println("Err with command", err)
+			os.Exit(1)
+		}
 	}
 }

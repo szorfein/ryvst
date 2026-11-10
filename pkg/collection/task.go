@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"sync"
 
+	"ryvst/pkg/colour"
 	"ryvst/pkg/download"
 )
 
@@ -17,6 +19,9 @@ func PushToHTTPSList(collection string, tasks []Tasks) []map[string]string {
 	for _, task := range tasks {
 		switch filepath.Ext(task.Url) {
 		case ".zip":
+			amap := map[string]string{"Name": task.Name, "Url": task.Url}
+			arr = append(arr, amap)
+		case ".ttf":
 			amap := map[string]string{"Name": task.Name, "Url": task.Url}
 			arr = append(arr, amap)
 		default:
@@ -74,7 +79,7 @@ func Maker(collection string, tasks []Tasks, done int) {
 	// 3. Generate hash and save them to cacheDir/hashes.yml
 	// 4. Move or Extract to the right path Tasks.To_dest depend of this type file (rar, zip, ttf...)
 	// 5. Update cacheDir/last-run.yml
-	if done > 1 {
+	if done >= 1 {
 		GenHashes(collection, c, tasks)     // 3, TODO Save them, Maybe in YAML or JSON ?
 		err := ToDest(collection, c, tasks) // 4
 		if err != nil {
@@ -114,4 +119,19 @@ func DownloadAll(config string, lists []string) (int, int) {
 	}
 
 	return taskDone, taskGitDone
+}
+
+func RunCommand(cmd string) error {
+	if cmd == "" {
+		return nil
+	}
+	colour.Info(2, "Executing command %s\n", cmd)
+	c := exec.Command("sh", "-c", cmd)
+	c.Stdout = os.Stdout
+	c.Stderr = os.Stderr
+	err := c.Run()
+	if err != nil {
+		return err
+	}
+	return nil
 }

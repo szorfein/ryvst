@@ -21,6 +21,7 @@ type Tasks struct {
 
 type Config struct {
 	EveryTime time.Duration `yaml:"every_time"`
+	Execute   string        `yaml:"execute"`
 	Tasks     []Tasks
 }
 
@@ -40,6 +41,7 @@ func Read(dir string, filename string) Config {
 	}
 	config := Config{ // Setting default values
 		EveryTime: 24 * time.Hour,
+		Execute:   "",
 	}
 	err = yaml.Unmarshal(data, &config)
 	if err != nil {

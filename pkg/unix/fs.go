@@ -2,7 +2,9 @@ package unix
 
 import (
 	"fmt"
+	"io"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -50,4 +52,43 @@ func MkDAllP(longpath string, perm os.FileMode) {
 			MkdirP(record, perm)
 		}
 	}
+}
+
+func CopyFile(source string, dest string) error {
+	base := filepath.Base(source)
+	fullDest := filepath.Join(dest, base)
+
+	MkDAllP(dest, 0o700)
+
+	// Open source file
+	sourceFile, err := os.Open(source)
+	if err != nil {
+		return fmt.Errorf("failed to open source: %w", err)
+	}
+	defer func() {
+		_ = sourceFile.Close()
+	}()
+
+	// Create destination file
+	destFile, err := os.Create(fullDest)
+	if err != nil {
+		return fmt.Errorf("failed to create destination: %w", err)
+	}
+	defer func() {
+		_ = destFile.Close()
+	}()
+
+	// Copy the content
+	_, err = io.Copy(destFile, sourceFile)
+	if err != nil {
+		return fmt.Errorf("failed to copy content: %w", err)
+	}
+
+	// Sync to ensure data is written to disk
+	err = destFile.Sync()
+	if err != nil {
+		return fmt.Errorf("failed to sync destination: %w", err)
+	}
+
+	return nil
 }
