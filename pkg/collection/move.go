@@ -36,6 +36,9 @@ func MimeDetect(filename string) string {
 
 func ToDest(collection string, cacheDir string, tasks []Tasks) error {
 	for _, task := range tasks {
+		if task.Name == "" { // Git
+			continue
+		}
 		fp := filepath.Join(cacheDir, task.Name)
 		td := filepath.Join(os.Getenv("HOME"), task.ToDest)
 

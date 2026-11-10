@@ -3,13 +3,16 @@ package collection
 import (
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"sync"
 
 	"ryvst/pkg/download"
 )
 
-func PushToList(collection string, tasks []Tasks) []map[string]string {
+// Push non-Git url to the list
+// For now, only zip file works but would accept more (jpg, png), (pdf, epub), tar.gz, (otf, ttf)
+func PushToHTTPSList(collection string, tasks []Tasks) []map[string]string {
 	var arr []map[string]string
 	for _, task := range tasks {
 		switch filepath.Ext(task.Url) {
@@ -18,6 +21,20 @@ func PushToList(collection string, tasks []Tasks) []map[string]string {
 			arr = append(arr, amap)
 		default:
 			fmt.Println("None yet supported:", task.Url)
+		}
+	}
+	return arr
+}
+
+// Push Git repository to list
+// Url should end by .git, e.g: https://github.com/szorfein/ryvst.git
+func PushToGitList(collection string, tasks []Tasks) []map[string]string {
+	var arr []map[string]string
+	for _, task := range tasks {
+		switch filepath.Ext(task.Url) {
+		case ".git":
+			amap := map[string]string{"ToDest": task.ToDest, "Url": task.Url}
+			arr = append(arr, amap)
 		}
 	}
 	return arr
@@ -36,7 +53,19 @@ func DownloadAllFiles(collection string, tasks []map[string]string) {
 	waitGroup.Wait()
 }
 
-func Maker(collection string, tasks []Tasks) {
+func gitAllRepos(collection string, tasks []map[string]string) {
+	home := os.Getenv("HOME")
+	var waitGroup sync.WaitGroup
+	for _, task := range tasks {
+		waitGroup.Go(func() {
+			f := filepath.Join(home, task["ToDest"])
+			download.Git(task["Url"], f)
+		})
+	}
+	waitGroup.Wait()
+}
+
+func Maker(collection string, tasks []Tasks, done int) {
 	c := CreateCacheDir(collection)
 
 	// TODO
@@ -45,24 +74,44 @@ func Maker(collection string, tasks []Tasks) {
 	// 3. Generate hash and save them to cacheDir/hashes.yml
 	// 4. Move or Extract to the right path Tasks.To_dest depend of this type file (rar, zip, ttf...)
 	// 5. Update cacheDir/last-run.yml
-	GenHashes(collection, c, tasks)     // 3, TODO Save them, Maybe in YAML or JSON ?
-	err := ToDest(collection, c, tasks) // 4
-	if err != nil {
-		log.Fatal(err)
+	if done > 1 {
+		GenHashes(collection, c, tasks)     // 3, TODO Save them, Maybe in YAML or JSON ?
+		err := ToDest(collection, c, tasks) // 4
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	ApplyTimeNow(c) // 5
 }
 
-func DownloadAll(config string, lists []string) {
+func DownloadAll(config string, lists []string) (int, int) {
 	downloadsList := make(map[string][]map[string]string) // don't work withou make()
+	gitList := make(map[string][]map[string]string)       // don't work withou make()
+	taskDone, taskGitDone := 0, 0
 	for _, list := range lists {
 		c := Read(config, list)
 		if !CompareTime(list, c.EveryTime) { // should return true or false, most logic?
 			continue
 		}
-		downloadsList[list] = PushToList(list, c.Tasks)
+		downloadsList[list] = PushToHTTPSList(list, c.Tasks)
+		gitList[list] = PushToGitList(list, c.Tasks)
 	}
 	for i, d := range downloadsList {
+		if len(d) == 0 {
+			continue
+		}
+		taskDone++
 		DownloadAllFiles(i, d)
 	}
+
+	// Git - clone or pull
+	for i, d := range gitList {
+		if len(d) == 0 {
+			continue
+		}
+		taskGitDone++
+		gitAllRepos(i, d)
+	}
+
+	return taskDone, taskGitDone
 }

@@ -58,8 +58,10 @@ func GenHashes(collection string, cachedir string, tasks []Tasks) {
 	colour.Info(2, "Generating hashes for %s\n", collection)
 	a := map[string]string{}
 	for _, task := range tasks {
-		f := filepath.Join(cachedir, task.Name)
-		a[task.Name] = unix.HashFile256(f)
+		if task.Name != "" {
+			f := filepath.Join(cachedir, task.Name)
+			a[task.Name] = unix.HashFile256(f)
+		}
 	}
 	fmt.Println(a)
 }

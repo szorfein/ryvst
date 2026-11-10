@@ -25,7 +25,10 @@ This is a rewrite of [Reaver](https://github.com/szorfein/reaver) from Ruby to G
 
 ## Features
 
-...
+- Downloads files very fast via Goroutine
+- Uncompress Archive ZIP, soon TAR
+- Time now support Second, Minute and Hour
+- Support Git (only `git clone`, `git pull`) and you need to install it.
 
 ## Use from source
 
@@ -58,3 +61,22 @@ tasks:
 ```
 
 `to_dest` is relative to `$HOME`, `name` is the name of the file after the download. All the files are extracted/moved in the given order, so place `ohmyzsh` first.
+
+#### Something with Git?
+
+If you own a git repository, you may prefer to use Git instead of an archive.
+
+    $EDITOR ~/.config/ryvst/neovim.yml
+
+```yml
+every_time: 12h
+tasks:
+  - url: https://github.com/szorfein/vie.git
+    to_dest: .config/nvim
+```
+
+You don't need to use `name` and the `url` should end with `.git`
+
+#### Look into /examples
+
+The [examples](https://github.com/szorfein/ryvst/tree/main/examples) should be enought to start writing your own files collection. ohmyzsh, tmux, neovim...
