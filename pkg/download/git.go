@@ -1,8 +1,6 @@
 package download
 
 import (
-	"fmt"
-	"os"
 	"os/exec"
 
 	"ryvst/pkg/colour"
@@ -19,31 +17,27 @@ func gitClone(repoUrl string, dest string) error {
 }
 
 func gitPull(repoUrl string, dest string) error {
-	err := os.Chdir(dest)
-	if err != nil {
-		return err
-	}
-
 	colour.Info(3, "Updating %s\n", repoUrl)
-	_, err = exec.Command("git", "pull").Output()
+	cmd := exec.Command("git", "pull")
+	cmd.Dir = dest
+	_, err := cmd.Output()
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func Git(repoUrl string, dest string) {
+func Git(repoUrl string, dest string) error {
 	if !unix.PathExist(dest) {
 		err := gitClone(repoUrl, dest)
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			return err
 		}
 	} else {
 		err := gitPull(repoUrl, dest)
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			return err
 		}
 	}
+	return nil
 }

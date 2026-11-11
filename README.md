@@ -11,7 +11,7 @@
 <a href="https://github.com/szorfein/ryvst/blob/main/LICENSE"><img src="https://img.shields.io/github/license/szorfein/ryvst?style=for-the-badge&logo=&color=CBA6F7&logoColor=CBA6F7&labelColor=302D41" alt="LICENSE"></a>&nbsp;&nbsp;
 </p>
 
-A download manager for your dotfiles, declare your need in YAML.
+A download manager for your dotfiles. Declare your needs in YAML.
 
 This is a rewrite of [Reaver](https://github.com/szorfein/reaver) from Ruby to Go.
 
@@ -21,14 +21,15 @@ This is a rewrite of [Reaver](https://github.com/szorfein/reaver) from Ruby to G
 
 - Alpha, (current stage)
 - Beta
-- First Release
+- Release
 
 ## Features
 
-- Downloads files very fast via Goroutine
-- Uncompress Archive ZIP, soon TAR
-- Time now support Second, Minute and Hour
-- Support Git (only `git clone`, `git pull`) and you need to install it.
+- Downloads files very fast via Goroutines
+- Uncompresses archive ZIP, TAR support coming soon
+- Time units now support Seconds, Minutes and Hours
+- Supports Git (only `git clone` and `git pull`); you just need to install Git.
+- Collections can execute command, e.g: `fc-cache -f` after downloadings fonts.
 
 ## Use from source
 
@@ -40,9 +41,9 @@ go build -o ryvst cmd/ryvst/main.go
 
 ## Examples
 
-#### Need ohmyzsh?
+#### Need ohmyzsh with plugins?
 
-[ohmyzsh](https://github.com/ohmyzsh) can be installed in `$HOME/.ohmyzsh`, plugins in `$HOME/.ohmyzsh/custom/plugins`, so create a new collections `zsh.yml`:
+[ohmyzsh](https://github.com/ohmyzsh) can be installed in `$HOME/.ohmyzsh` with plugins in `$HOME/.ohmyzsh/custom/plugins`, so create a new collections `zsh.yml`:
 
     $EDITOR ~/.config/ryvst/zsh.yml
 
@@ -52,11 +53,11 @@ tasks:
   - name: ohmyzsh.zip
     url: https://github.com/ohmyzsh/ohmyzsh/archive/refs/heads/master.zip
     to_dest: .ohmyzsh
-  - name: zsh-autosuggestions.tar.gz
-    url: https://github.com/zsh-users/zsh-autosuggestions/archive/refs/heads/master.tar.gz
+  - name: zsh-autosuggestions.zip
+    url: https://github.com/zsh-users/zsh-autosuggestions/archive/refs/heads/master.zip
     to_dest: .ohmyzsh/custom/plugins/zsh-autosuggestions
-  - name: zsh-syntax-highlighting.tar.gz
-    url: https://github.com/zsh-users/zsh-syntax-highlighting/archive/refs/heads/master.tar.gz
+  - name: zsh-syntax-highlighting.zip
+    url: https://github.com/zsh-users/zsh-syntax-highlighting/archive/refs/heads/master.zip
     to_dest: .ohmyzsh/custom/plugins/zsh-syntax-highlighting
 ```
 
@@ -64,7 +65,7 @@ tasks:
 
 #### Something with Git?
 
-If you own a git repository, you may prefer to use Git instead of an archive.
+If you own a Git repository, you may prefer to use Git instead of an archive.
 
     $EDITOR ~/.config/ryvst/neovim.yml
 
@@ -77,6 +78,6 @@ tasks:
 
 You don't need to use `name` and the `url` should end with `.git`
 
-#### Look into /examples
+#### Look in /examples
 
-The [examples](https://github.com/szorfein/ryvst/tree/main/examples) should be enought to start writing your own files collection. ohmyzsh, tmux, neovim...
+The [examples](https://github.com/szorfein/ryvst/tree/main/examples) directory should be enough to get you started writing your own file collection. fonts, neovim, ohmyzsh, tmux...

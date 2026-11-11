@@ -64,7 +64,10 @@ func gitAllRepos(collection string, tasks []map[string]string) {
 	for _, task := range tasks {
 		waitGroup.Go(func() {
 			f := filepath.Join(home, task["ToDest"])
-			download.Git(task["Url"], f)
+			if err := download.Git(task["Url"], f); err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		})
 	}
 	waitGroup.Wait()
