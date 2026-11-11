@@ -6,14 +6,19 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	"ryvst/pkg/colour"
 )
 
+var DefaultHTTPClient = &http.Client{
+	Timeout: 4 * time.Minute, // Some Network/Site are slow... Tor power?
+}
+
 func WriteToDisk(resp *http.Response, dest string) error {
 	file, err := os.Create(dest)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create file: %w", err)
 	}
 	defer func() {
 		_ = file.Close()
@@ -21,9 +26,9 @@ func WriteToDisk(resp *http.Response, dest string) error {
 
 	size, err := io.Copy(file, resp.Body)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to write to file: %w", err)
 	}
-	colour.Info(4, "%s | %d\n", filepath.Base(dest), size)
+	colour.Info(4, "%s | %d bytes written\n", filepath.Base(dest), size)
 	return nil
 }
 
@@ -32,22 +37,24 @@ func Https(url string, dest string) error {
 	// TODO: http.Get don't have timeout
 	// should we prefer resp, err := http.NewRequest(http.MethodGet, url, nil) ?
 	// https://www.gofaq.org/en/how-to-read-an-http-response-body-in-go/
-	resp, err := http.Get(url)
+	resp, err := DefaultHTTPClient.Get(url)
 	if resp != nil {
 		defer func() {
-			err := resp.Body.Close()
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			_ = resp.Body.Close()
 		}()
 	}
 	if err != nil {
-		return nil
+		return fmt.Errorf("http request failed: %w", err) // FIXED: was returning nil
 	}
+
+	// FIXED: Check for non-2xx status codes before writing to disk
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
 	error := WriteToDisk(resp, dest)
 	if error != nil {
-		return error
+		return fmt.Errorf("failed to write to disk: %w", err)
 	}
 	return nil
 }
