@@ -29,15 +29,7 @@ func gitPull(repoUrl string, dest string) error {
 
 func Git(repoUrl string, dest string) error {
 	if !unix.PathExist(dest) {
-		err := gitClone(repoUrl, dest)
-		if err != nil {
-			return err
-		}
-	} else {
-		err := gitPull(repoUrl, dest)
-		if err != nil {
-			return err
-		}
+		return gitClone(repoUrl, dest)
 	}
-	return nil
+	return gitPull(repoUrl, dest)
 }

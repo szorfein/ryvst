@@ -3,14 +3,31 @@ package download
 import (
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"ryvst/pkg/colour"
 )
 
-func Grab(url string, dest string) {
+func WriteToDisk(resp *http.Response, dest string) error {
+	file, err := os.Create(dest)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		_ = file.Close()
+	}()
+
+	size, err := io.Copy(file, resp.Body)
+	if err != nil {
+		return err
+	}
+	colour.Info(4, "%s | %d\n", filepath.Base(dest), size)
+	return nil
+}
+
+func Https(url string, dest string) error {
 	colour.Info(3, "Downloading %s...\n", url)
 	// TODO: http.Get don't have timeout
 	// should we prefer resp, err := http.NewRequest(http.MethodGet, url, nil) ?
@@ -26,20 +43,11 @@ func Grab(url string, dest string) {
 		}()
 	}
 	if err != nil {
-		fmt.Println("http.Get", err)
-		os.Exit(1)
+		return nil
 	}
-	file, err := os.Create(dest)
-	if err != nil {
-		log.Fatal(err)
+	error := WriteToDisk(resp, dest)
+	if error != nil {
+		return error
 	}
-	size, _ := io.Copy(file, resp.Body)
-	defer func() {
-		err := file.Close()
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-	}()
-	colour.Info(4, "%s | %d\n", dest, size)
+	return nil
 }

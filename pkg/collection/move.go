@@ -57,6 +57,11 @@ func ToDest(collection string, cacheDir string, tasks []Tasks) error {
 			if err != nil {
 				return err
 			}
+		case "application/x-gzip": // tar.gz
+			err := unix.ExtractGZIP(fp, td)
+			if err != nil {
+				return err
+			}
 		default:
 			return fmt.Errorf("MimeType %s not yet supported", mimefile)
 		}

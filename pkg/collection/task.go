@@ -17,15 +17,16 @@ import (
 func PushToHTTPSList(collection string, tasks []Tasks) []map[string]string {
 	var arr []map[string]string
 	for _, task := range tasks {
-		switch filepath.Ext(task.Url) {
-		case ".zip":
+		mimetype := filepath.Ext(task.Url)
+		switch mimetype {
+		case ".zip", ".gz":
 			amap := map[string]string{"Name": task.Name, "Url": task.Url}
 			arr = append(arr, amap)
 		case ".ttf":
 			amap := map[string]string{"Name": task.Name, "Url": task.Url}
 			arr = append(arr, amap)
 		default:
-			fmt.Println("None yet supported:", task.Url)
+			fmt.Println("None yet supported:", mimetype)
 		}
 	}
 	return arr
@@ -52,7 +53,11 @@ func DownloadAllFiles(collection string, tasks []map[string]string) {
 	for _, task := range tasks {
 		waitGroup.Go(func() {
 			f := filepath.Join(cache, task["Name"])
-			download.Grab(task["Url"], f)
+			err := download.Https(task["Url"], f)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		})
 	}
 	waitGroup.Wait()
@@ -64,7 +69,8 @@ func gitAllRepos(collection string, tasks []map[string]string) {
 	for _, task := range tasks {
 		waitGroup.Go(func() {
 			f := filepath.Join(home, task["ToDest"])
-			if err := download.Git(task["Url"], f); err != nil {
+			err := download.Git(task["Url"], f)
+			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}

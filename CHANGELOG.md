@@ -1,7 +1,8 @@
-## ALPHA, 0.10.0
+## ALPHA, 0.11.0
 
+- Can Decompress tar.gz
 - Support Git (only Clone and Pull), URL should end with suffix `.git`
-- Donwload all the files one time with Goroutine
+- Download all the files one time with Goroutine
 - Can Uncompress Zip file
 - Add examples at [/examples](https://github.com/szorfein/ryvst/tree/main/examples), can be copied under `$HOME/.config/ryvst/`
 - Better README

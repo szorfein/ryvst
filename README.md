@@ -26,7 +26,7 @@ This is a rewrite of [Reaver](https://github.com/szorfein/reaver) from Ruby to G
 ## Features
 
 - Downloads files very fast via Goroutines
-- Uncompresses archive ZIP, TAR support coming soon
+- Uncompresses archive "zip", "tar.gz"
 - Time units now support Seconds, Minutes and Hours
 - Supports Git (only `git clone` and `git pull`); you just need to install Git.
 - Collections can execute command, e.g: `fc-cache -f` after downloadings fonts.
