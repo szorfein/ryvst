@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"ryvst/pkg/colour"
@@ -29,6 +30,11 @@ func PushToHTTPSList(collection string, tasks []Tasks) []map[string]string {
 		case "font/ttf":
 			amap := map[string]string{"Name": task.Name, "Url": task.Url}
 			arr = append(arr, amap)
+		case "application/octet-stream": // octet-stream is returned when the mimetype is no found...
+			if strings.HasSuffix(task.Name, ".tar.xz") {
+				amap := map[string]string{"Name": task.Name, "Url": task.Url}
+				arr = append(arr, amap)
+			}
 		default:
 			fmt.Println("None yet supported:", mimetype)
 		}

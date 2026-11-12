@@ -12,7 +12,7 @@ import (
 )
 
 var DefaultHTTPClient = &http.Client{
-	Timeout: 30 * time.Second, // Some Network/Site are slow... Tor power?
+	Timeout: 500 * time.Second, // Some Network/Site are slow... Tor power?
 }
 
 func WriteToDisk(resp *http.Response, dest string) error {
@@ -23,10 +23,10 @@ func WriteToDisk(resp *http.Response, dest string) error {
 	}
 	defer func() { _ = file.Close() }()
 
-	size, err := io.Copy(file, resp.Body)
-	if err != nil {
+	size, erro := io.Copy(file, resp.Body)
+	if erro != nil {
 		fmt.Println("Second", dest)
-		return fmt.Errorf("failed to write to file: %w", err)
+		return fmt.Errorf("failed to write to file: %w", erro)
 	}
 	colour.Info(4, "%s | %d bytes written\n", filepath.Base(dest), size)
 	return nil

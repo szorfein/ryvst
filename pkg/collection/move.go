@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"ryvst/pkg/colour"
 	"ryvst/pkg/unix"
@@ -61,6 +62,13 @@ func ToDest(collection string, cacheDir string, tasks []Tasks) error {
 			err := unix.ExtractGZIP(fp, td)
 			if err != nil {
 				return err
+			}
+		case "application/octet-stream": // octet-stream is returned when the mimetype is no found...
+			if strings.HasSuffix(task.Name, ".tar.xz") {
+				err := unix.ExtractTarXz(fp, td)
+				if err != nil {
+					return err
+				}
 			}
 		default:
 			return fmt.Errorf("MimeType %s not yet supported", mimefile)
