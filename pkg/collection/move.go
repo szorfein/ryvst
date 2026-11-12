@@ -52,7 +52,7 @@ func ToDest(collection string, cacheDir string, tasks []Tasks) error {
 			if err != nil {
 				return err
 			}
-		case "font/ttf":
+		case "font/ttf", "text/xml; charset=utf-8":
 			colour.Info(3, "Moving %s to %s\n", filepath.Base(fp), td)
 			err := unix.CopyFile(fp, td)
 			if err != nil {

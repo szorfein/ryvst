@@ -27,7 +27,7 @@ func PushToHTTPSList(collection string, tasks []Tasks) []map[string]string {
 		case "application/zip", "application/x-gzip":
 			amap := map[string]string{"Name": task.Name, "Url": task.Url}
 			arr = append(arr, amap)
-		case "font/ttf":
+		case "font/ttf", "text/xml; charset=utf-8":
 			amap := map[string]string{"Name": task.Name, "Url": task.Url}
 			arr = append(arr, amap)
 		case "application/octet-stream": // octet-stream is returned when the mimetype is no found...
