@@ -1,5 +1,6 @@
-## ALPHA, 0.11.0
+## ALPHA, 0.12.0
 
+- 2026-Nov-12 - Detect mimetype directly from an URL
 - Can Decompress tar.gz
 - Support Git (only Clone and Pull), URL should end with suffix `.git`
 - Download all the files one time with Goroutine

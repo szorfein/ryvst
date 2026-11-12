@@ -12,20 +12,20 @@ import (
 )
 
 var DefaultHTTPClient = &http.Client{
-	Timeout: 4 * time.Minute, // Some Network/Site are slow... Tor power?
+	Timeout: 30 * time.Second, // Some Network/Site are slow... Tor power?
 }
 
 func WriteToDisk(resp *http.Response, dest string) error {
 	file, err := os.Create(dest)
 	if err != nil {
+		fmt.Println("First", dest)
 		return fmt.Errorf("failed to create file: %w", err)
 	}
-	defer func() {
-		_ = file.Close()
-	}()
+	defer func() { _ = file.Close() }()
 
 	size, err := io.Copy(file, resp.Body)
 	if err != nil {
+		fmt.Println("Second", dest)
 		return fmt.Errorf("failed to write to file: %w", err)
 	}
 	colour.Info(4, "%s | %d bytes written\n", filepath.Base(dest), size)
@@ -39,9 +39,7 @@ func Https(url string, dest string) error {
 	// https://www.gofaq.org/en/how-to-read-an-http-response-body-in-go/
 	resp, err := DefaultHTTPClient.Get(url)
 	if resp != nil {
-		defer func() {
-			_ = resp.Body.Close()
-		}()
+		defer func() { _ = resp.Body.Close() }()
 	}
 	if err != nil {
 		return fmt.Errorf("http request failed: %w", err) // FIXED: was returning nil

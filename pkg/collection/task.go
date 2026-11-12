@@ -17,12 +17,16 @@ import (
 func PushToHTTPSList(collection string, tasks []Tasks) []map[string]string {
 	var arr []map[string]string
 	for _, task := range tasks {
-		mimetype := filepath.Ext(task.Url)
+		mimetype, err := download.GetFileContentType(task.Url)
+		if err != nil {
+			fmt.Println("Error detect type", err)
+			os.Exit(1)
+		}
 		switch mimetype {
-		case ".zip", ".gz":
+		case "application/zip", "application/x-gzip":
 			amap := map[string]string{"Name": task.Name, "Url": task.Url}
 			arr = append(arr, amap)
-		case ".ttf":
+		case "font/ttf":
 			amap := map[string]string{"Name": task.Name, "Url": task.Url}
 			arr = append(arr, amap)
 		default:
