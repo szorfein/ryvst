@@ -48,6 +48,6 @@ func Read(dir string, filename string) Config {
 		fmt.Println("Err collection.Unmarshal", err)
 		os.Exit(1)
 	}
-	fmt.Printf("YAML content: %+v\n", config)
+	//fmt.Printf("YAML content: %+v\n", config)
 	return config
 }

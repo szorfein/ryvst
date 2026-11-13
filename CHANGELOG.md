@@ -1,6 +1,6 @@
 ## ALPHA, 0.14.0
 
-- Nov.2026: Can download and copy svg icons
+- Nov.2026: [aa27444](https://github.com/szorfein/ryvst/commit/aa27444f513a313ee7c5bdaaa084cab4cd1c71c4) - Can download and copy svg icons
 - Nov.2026: Can decompress tar.xz archive (LZMA2)
 - Nov.2026: [0aebef9](https://github.com/szorfein/ryvst/commit/0aebef93d971f59716804085b04b7784d616e609) - Detect mimetype directly from an URL
 - Nov.2026: [86626c5](https://github.com/szorfein/ryvst/commit/86626c55749ec9edad690ec9b40d464d83bcb3b2) - Can Decompress tar.gz

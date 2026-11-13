@@ -14,8 +14,7 @@ import (
 )
 
 func ExtractGZIP(src string, dest string) error {
-	srcBase := filepath.Base(src)
-	colour.Info(4, "Extracting %s to %s\n", srcBase, dest)
+	colour.Info(4, "Extracting %s to %s\n", filepath.Base(src), dest)
 
 	MkDAllP(dest, 0o700)
 

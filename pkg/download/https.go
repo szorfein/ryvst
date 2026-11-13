@@ -25,7 +25,7 @@ func WriteToDisk(resp *http.Response, dest string) error {
 
 	size, erro := io.Copy(file, resp.Body)
 	if erro != nil {
-		fmt.Println("Second", dest)
+		fmt.Println("Downloading is too long...", dest)
 		return fmt.Errorf("failed to write to file: %w", erro)
 	}
 	colour.Info(4, "%s | %d bytes written\n", filepath.Base(dest), size)

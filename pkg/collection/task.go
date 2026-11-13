@@ -36,7 +36,9 @@ func PushToHTTPSList(collection string, tasks []Tasks) []map[string]string {
 				arr = append(arr, amap)
 			}
 		default:
-			fmt.Println("None yet supported:", mimetype)
+			if !strings.HasSuffix(task.Url, ".git") {
+				fmt.Println("None yet supported:", mimetype)
+			}
 		}
 	}
 	return arr

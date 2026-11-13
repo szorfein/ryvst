@@ -1,5 +1,7 @@
 <p align="center">
-<img src="https://github.com/szorfein/ryvst/blob/main/.github/assets/ryvst.png?raw=true" height="300" weight="500" />
+<img src="https://github.com/szorfein/ryvst/blob/main/.github/assets/ryvst.png?raw=true" height="300" weight="510" />
+<br />
+<small align="center">Logo generated on gradually.ai</small>
 </p>
 
 <h1 align="center"></h1>
@@ -17,19 +19,23 @@ This is a rewrite of [Reaver](https://github.com/szorfein/reaver) from Ruby to G
 
 </div>
 
+We all like writing custom shell scripts, just to get wallpapers, fonts, cloning things we like. All these scripts do the same thing over and over, with the only variation being the "source" and the "destination".
+
+Ryvst simplifies the installation of your "environment" by grabbing all the stuff you need so you can avoid (re)writing simple scripts using massivly `curl`, `wget`, `unzip`, `untar` or `git`. Instead you write a few lines in a YAML file. Ryvst does the job and checks for updates at the specified interval.
+
 ## Development
 
-- Alpha, (current stage)
-- Beta
+- Alpha
+- Beta, (current stage)
 - Release
 
 ## Features
 
 - Downloads files very fast via Goroutines
-- Uncompresses archive "zip", "tar.gz"
+- Can decompresses archive zip, tar.gz, tar.xz
 - Time units now support Seconds, Minutes and Hours
 - Supports Git (only `git clone` and `git pull`); you just need to install Git.
-- Collections can execute command, e.g: `fc-cache -f` after downloadings fonts.
+- Collections can execute command, e.g: `fc-cache -f` after installing fonts.
 
 ## Use from source
 
@@ -37,6 +43,22 @@ This is a rewrite of [Reaver](https://github.com/szorfein/reaver) from Ruby to G
 git clone https://github.com/szorfein/ryvst
 cd ryvst
 go build -o ryvst cmd/ryvst/main.go
+```
+
+## Usage
+
+Fill your `$HOME/.config/ryvst` directory with YAML files defining your needs, then launch `ryvst`.
+You can automate the startup of `ryvst` by including it in your `bash_profile`, `zprofile` or your `sway` configuration...
+
+## Starting on Sway(FX)
+
+After copying the binary in `$HOME/bin`, you can configure Sway like this:
+
+```
+# Run once at login
+exec {
+  ~/bin/ryvst
+}
 ```
 
 ## Examples
