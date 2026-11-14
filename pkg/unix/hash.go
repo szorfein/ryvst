@@ -5,25 +5,20 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"log"
 	"os"
 )
 
-func HashFile256(file string) string {
+func HashFile256(file string) (string, error) {
 	f, err := os.Open(file)
 	if err != nil {
-		log.Fatal(err)
+		return "", fmt.Errorf("HashFile256, error opening file: %w", err)
 	}
-	defer func() {
-		err := f.Close()
-		if err != nil {
-			fmt.Println(err)
-		}
-	}()
+
+	defer func() { _ = f.Close() }()
 
 	h := sha256.New()
 	if _, err := io.Copy(h, f); err != nil {
-		log.Fatal(err)
+		return "", err
 	}
-	return hex.EncodeToString(h.Sum(nil))
+	return hex.EncodeToString(h.Sum(nil)), nil
 }

@@ -29,7 +29,13 @@ func loopInTask(d *[]Download, list string, config string) {
 	c := collection.Read(config, list)
 	cache := collection.CreateCacheDir(list)
 
-	if !collection.CompareTime(list, c.EveryTime) { // should return true or false, most logic?
+	itsTime, err := collection.CompareTime(list, c.EveryTime)
+	if err != nil {
+		fmt.Println("Err CompareTime", err)
+		os.Exit(1)
+	}
+
+	if !itsTime {
 		return
 	}
 
@@ -125,8 +131,14 @@ func recordMetas(d []Download) {
 		}
 	}
 	for k := range uniqueCacheDir { // k=key, v=command
-		collection.GenHashes(k, uniqueCacheDir[k])
-		collection.ApplyTimeNow(k)
+		if errHash := collection.GenHashes(k, uniqueCacheDir[k]); errHash != nil {
+			fmt.Println("Error writing hashes:", errHash)
+			os.Exit(1)
+		}
+		if errTime := collection.ApplyTimeNow(k); errTime != nil {
+			fmt.Println("Error writing time:", errTime)
+			os.Exit(1)
+		}
 	}
 }
 

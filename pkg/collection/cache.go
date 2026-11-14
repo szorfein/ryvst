@@ -12,81 +12,77 @@ import (
 	"ryvst/pkg/unix"
 )
 
-// TODO: move some parts in internal/
-var workdir = os.Getenv("HOME") + "/.cache/ryvst"
+func getWorkdir() string { return os.Getenv("HOME") + "/.cache/ryvst" }
 
 func CreateCacheDir(filename string) string {
 	s := strings.Split(filename, ".yml")
-	n := filepath.Join(workdir, s[0])
+	n := filepath.Join(getWorkdir(), s[0])
 	unix.MkDAllP(n, 0o700)
 	return n
 }
 
-func CompareTime(collection string, everytime time.Duration) bool {
+// Return true if something would happen
+func CompareTime(collection string, everytime time.Duration) (bool, error) {
 	cacheDir := CreateCacheDir(collection)
 	now := time.Now()
 
 	lr := filepath.Join(cacheDir, "last.txt")
 	if !unix.PathExist(lr) {
-		return true
+		return true, nil
 	}
 
 	data, err := os.ReadFile(lr)
 	if err != nil {
-		fmt.Println(err)
+		return false, fmt.Errorf("failed to read last time: %w", err)
 	}
 
-	//fmt.Printf("Read %s: %d bytes\n", lr, len(data))
 	date, err := time.Parse(time.RFC1123, string(data))
 	if err != nil {
-		fmt.Println("timeParse", err)
-		os.Exit(1)
+		return false, fmt.Errorf("failed to parse time: %w", err)
 	}
 
 	plus := date.Add(everytime)
-	//fmt.Printf("date origin %s - modified with %s, %s\n", date, everytime, plus)
-	if plus.After(now) {
-		colour.Info(4, "Futur run: %s\n", plus.Format(time.RFC1123)) // not time, return false
-	} else {
-		return true
+	if !plus.After(now) { // yah, it's weird
+		return true, nil
 	}
 
-	return false
+	colour.Info(4, "Futur run: %s\n", plus.Format(time.RFC1123)) // not time, return false
+	return false, nil
 }
 
-func GenHashes(cachedir string, files []string) {
+func GenHashes(cachedir string, files []string) error {
 	colour.Info(2, "Generating hashes for %s\n", filepath.Base(cachedir))
 	a := make(map[string]string)
 	for _, file := range files {
 		if file != "" {
 			f := filepath.Join(cachedir, file)
-			a[file] = unix.HashFile256(f)
+			hash, err := unix.HashFile256(f)
+			if err != nil {
+				return err
+			}
+			a[file] = hash
 		}
 	}
 	fmt.Println(a)
+	return nil
 }
 
 // Record Time if all the files has been downloaded for CompareTime().
-func ApplyTimeNow(cacheDir string) {
+func ApplyTimeNow(cacheDir string) error {
 	now := time.Now()
 	p := filepath.Join(cacheDir, "last.txt")
 	colour.Info(3, "Record Time.Now %s for %s\n", now.String(), cacheDir)
 
 	file, err := os.OpenFile(p, os.O_CREATE|os.O_WRONLY, 0o600)
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
-	defer func() {
-		err := file.Close()
-		if err != nil {
-			fmt.Println(err)
-		}
-	}()
+	defer func() { _ = file.Close() }()
 	nowformat := now.Format(time.RFC1123)
 
-	n, err := file.WriteString(string(nowformat))
-	if err != nil {
-		fmt.Println(n, err)
+	_, errws := file.WriteString(string(nowformat))
+	if errws != nil {
+		return err
 	}
-	//fmt.Printf("wrote %d bytes\n", n)
+	return nil
 }
