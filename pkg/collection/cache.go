@@ -54,13 +54,13 @@ func CompareTime(collection string, everytime time.Duration) bool {
 	return false
 }
 
-func GenHashes(collection string, cachedir string, tasks []Tasks) {
-	colour.Info(2, "Generating hashes for %s\n", collection)
-	a := map[string]string{}
-	for _, task := range tasks {
-		if task.Name != "" {
-			f := filepath.Join(cachedir, task.Name)
-			a[task.Name] = unix.HashFile256(f)
+func GenHashes(cachedir string, files []string) {
+	colour.Info(2, "Generating hashes for %s\n", filepath.Base(cachedir))
+	a := make(map[string]string)
+	for _, file := range files {
+		if file != "" {
+			f := filepath.Join(cachedir, file)
+			a[file] = unix.HashFile256(f)
 		}
 	}
 	fmt.Println(a)

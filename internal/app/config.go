@@ -2,6 +2,8 @@ package app
 
 import (
 	"os"
+
+	"ryvst/pkg/unix"
 )
 
 func Show_path() string {
@@ -11,5 +13,7 @@ func Show_path() string {
 	} else if os.Getenv("HOME") != "" {
 		config = os.Getenv("HOME") + "/.config/ryvst"
 	}
+	unix.MkdirP(config, 0o700)
+
 	return config
 }

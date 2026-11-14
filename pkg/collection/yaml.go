@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"time"
 
-	"ryvst/pkg/colour"
 	"ryvst/pkg/unix"
 
 	"go.yaml.in/yaml/v4"
@@ -27,7 +26,7 @@ type Config struct {
 
 func Read(dir string, filename string) Config {
 	fullpath := filepath.Join(dir, filename)
-	colour.Info(2, "Loading collection %s\n", fullpath)
+	//colour.Info(2, "Loading collection %s\n", fullpath)
 	file := unix.OpenFile(fullpath)
 	defer func() {
 		if err := file.Close(); err != nil {

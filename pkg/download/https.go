@@ -12,7 +12,7 @@ import (
 )
 
 var DefaultHTTPClient = &http.Client{
-	Timeout: 500 * time.Second, // Some Network/Site are slow... Tor power?
+	Timeout: 600 * time.Second, // Some Network/Site are slow... Tor power?
 }
 
 func WriteToDisk(resp *http.Response, dest string) error {

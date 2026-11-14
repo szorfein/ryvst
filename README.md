@@ -48,9 +48,10 @@ go build -o ryvst cmd/ryvst/main.go
 ## Usage
 
 Fill your `$HOME/.config/ryvst` directory with YAML files defining your needs, then launch `ryvst`.
+
 You can automate the startup of `ryvst` by including it in your `bash_profile`, `zprofile` or your `sway` configuration...
 
-## Starting on Sway(FX)
+## Starting on Sway
 
 After copying the binary in `$HOME/bin`, you can configure Sway like this:
 

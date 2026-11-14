@@ -1,4 +1,8 @@
-## ALPHA, 0.14.0
+## BETA, 0.20.0
+
+- Nov.2026: Enhance startup time and performance.
+
+## ALPHA, 0.14.0 - Nov.13 2026
 
 - Nov.2026: [aa27444](https://github.com/szorfein/ryvst/commit/aa27444f513a313ee7c5bdaaa084cab4cd1c71c4) - Can download and copy svg icons
 - Nov.2026: Can decompress tar.xz archive (LZMA2)
