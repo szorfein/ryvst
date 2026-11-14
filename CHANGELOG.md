@@ -1,5 +1,6 @@
-## BETA, 0.21.0
+## BETA, 0.22.0
 
+- Nov.2026: Add test on pkg/collection/cache
 - Nov.2026: Add test on pkg/collection/yaml
 - Nov.2026: Enhance startup time and performance.
 

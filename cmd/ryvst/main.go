@@ -131,10 +131,12 @@ func recordMetas(d []Download) {
 		}
 	}
 	for k := range uniqueCacheDir { // k=key, v=command
-		if errHash := collection.GenHashes(k, uniqueCacheDir[k]); errHash != nil {
+		hashes, errHash := collection.GenHashes(k, uniqueCacheDir[k])
+		if errHash != nil {
 			fmt.Println("Error writing hashes:", errHash)
 			os.Exit(1)
 		}
+		fmt.Println(hashes)
 		if errTime := collection.ApplyTimeNow(k); errTime != nil {
 			fmt.Println("Error writing time:", errTime)
 			os.Exit(1)

@@ -50,7 +50,7 @@ func CompareTime(collection string, everytime time.Duration) (bool, error) {
 	return false, nil
 }
 
-func GenHashes(cachedir string, files []string) error {
+func GenHashes(cachedir string, files []string) (map[string]string, error) {
 	colour.Info(2, "Generating hashes for %s\n", filepath.Base(cachedir))
 	a := make(map[string]string)
 	for _, file := range files {
@@ -58,13 +58,12 @@ func GenHashes(cachedir string, files []string) error {
 			f := filepath.Join(cachedir, file)
 			hash, err := unix.HashFile256(f)
 			if err != nil {
-				return err
+				return a, err
 			}
 			a[file] = hash
 		}
 	}
-	fmt.Println(a)
-	return nil
+	return a, nil
 }
 
 // Record Time if all the files has been downloaded for CompareTime().
