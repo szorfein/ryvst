@@ -1,5 +1,6 @@
-## BETA, 0.20.0
+## BETA, 0.21.0
 
+- Nov.2026: Add test on pkg/collection/yaml
 - Nov.2026: Enhance startup time and performance.
 
 ## ALPHA, 0.14.0 - Nov.13 2026

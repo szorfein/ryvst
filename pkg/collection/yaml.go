@@ -26,8 +26,14 @@ type Config struct {
 
 func Read(dir string, filename string) Config {
 	fullpath := filepath.Join(dir, filename)
-	//colour.Info(2, "Loading collection %s\n", fullpath)
 	file := unix.OpenFile(fullpath)
+
+	// Add this safety check
+	if file == nil {
+		fmt.Println("Error: file is nil, cannot read config")
+		os.Exit(1)
+	}
+
 	defer func() {
 		if err := file.Close(); err != nil {
 			fmt.Println("Error closing file", err)
