@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"ryvst/pkg/colour"
+	"ryvst/pkg/extract"
 	"ryvst/pkg/unix"
 )
 
@@ -43,8 +44,8 @@ func ToDest(cachedir string, name string, todest string) error {
 	//fmt.Println("MIMETYPE", mimefile)
 	switch mimefile {
 	case "application/zip":
-		colour.Info(3, "Extracting %s to %s\n", filepath.Base(fp), td)
-		err := unix.Unzip(fp, td)
+		colour.Info(3, "Extracting %s\n", filepath.Base(fp))
+		err := extract.Unzip(fp, td)
 		if err != nil {
 			return err
 		}

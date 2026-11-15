@@ -1,4 +1,4 @@
-package unix
+package extract
 
 // inspiration
 // https://gosamples.dev/unzip-file/
@@ -17,21 +17,14 @@ func Unzip(source string, dest string) error {
 	// 1. Open the zip file
 	reader, err := zip.OpenReader(source)
 	if err != nil {
-		return err
+		return fmt.Errorf("unzip, error on zip.openreader: %w", err)
 	}
-	defer func() {
-		err := reader.Close()
-		if err != nil {
-			fmt.Println(err)
-		}
-	}()
+	defer func() { _ = reader.Close() }()
 
 	// 2. Iterate over zip files inside the archive and unzip each of them
 	for _, f := range reader.File {
-		//fmt.Println("Start decompress file", total)
-		err := UnzipFile(f, dest)
-		if err != nil {
-			return err
+		if err := UnzipFile(f, dest); err != nil {
+			return fmt.Errorf("unzip, error unzipfile: %w", err)
 		}
 	}
 
@@ -47,27 +40,38 @@ func ParseName(aName string) (string, error) {
 	return name, nil
 }
 
+// Remove first directory if found suffix -main or -master
+func stripComponent(localname string) string {
+	normalizedName := filepath.ToSlash(localname)
+	//split := strings.Split(localname, string(os.PathSeparator))
+	split := strings.SplitN(normalizedName, "/", 2)
+
+	var dropBase string
+	// if len(split) == 2 {
+	if strings.HasSuffix(split[0], "-main") {
+		dropBase = filepath.FromSlash(split[1])
+		return dropBase
+	}
+	if strings.HasSuffix(split[0], "-master") {
+		dropBase = filepath.FromSlash(split[1])
+		return dropBase
+	}
+
+	return localname
+}
+
 func UnzipFile(f *zip.File, dest string) error {
 	localname, err := ParseName(f.Name)
 	if err != nil {
-		fmt.Println("ParseName Err", err)
+		return fmt.Errorf("parse name error: %w", err)
 	}
 
 	// This remove the first folder e.g: ohmyzsh-master/ or yourplugin-main/
-	lsplit := strings.Split(localname, "/")
-	dropBase, err := filepath.Rel(lsplit[0], localname)
-	if err != nil {
-		fmt.Println(err)
-	}
-	//fmt.Printf("default base %s - new %s\n", localname, dropBase)
+	dropBase := stripComponent(localname)
+	filePath := filepath.Join(dest, dropBase)
 
-	var filePath string
-	if dropBase == "." {
-		filePath = filepath.Join(dest, localname) // TODO, should be removed at the end...
-	} else {
-		filePath = filepath.Join(dest, dropBase)
-	}
-	//fmt.Println("INTO Archive with", filePath)
+	// For debug
+	fmt.Println("Extract:", filePath)
 
 	// 4. Check if file paths are not vulnerable to Zip Slip
 	if !strings.HasPrefix(filePath, filepath.Clean(dest)+string(os.PathSeparator)) {
@@ -77,41 +81,32 @@ func UnzipFile(f *zip.File, dest string) error {
 	// 5. Create directory tree
 	if f.FileInfo().IsDir() {
 		if err := os.MkdirAll(filePath, os.ModePerm); err != nil {
-			return err
+			return fmt.Errorf("found directory, but failing to create: %w", err)
 		}
 		return nil
 	}
 
 	if err := os.MkdirAll(filepath.Dir(filePath), os.ModePerm); err != nil {
-		return err
+		return fmt.Errorf("zip, basedir, fail to create: %w", err)
 	}
 
 	// 6. Create a destination file for unzipped content
 	destinationFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
 	if err != nil {
-		return err
+		return fmt.Errorf("zip, error on os.openfile: %w", err)
 	}
-	defer func() {
-		err := destinationFile.Close()
-		if err != nil {
-			fmt.Println(err)
-		}
-	}()
+	defer func() { _ = destinationFile.Close() }()
 
 	// 7. Unzip the content of a file and copy it to the destination file
 	zippedFile, err := f.Open()
 	if err != nil {
-		return err
+		return fmt.Errorf("zip, error on f.open: %w", err)
 	}
-	defer func() {
-		err := zippedFile.Close()
-		if err != nil {
-			fmt.Println(err)
-		}
-	}()
+	defer func() { _ = zippedFile.Close() }()
 
 	if _, err := io.Copy(destinationFile, zippedFile); err != nil {
-		return err
+		return fmt.Errorf("zip, error on io.copy: %w", err)
 	}
+
 	return nil
 }

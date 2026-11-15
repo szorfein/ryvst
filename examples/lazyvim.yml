@@ -1,0 +1,4 @@
+every_time: 24h
+tasks:
+  - url: https://github.com/LazyVim/starter.git
+    to_dest: .config/nvim

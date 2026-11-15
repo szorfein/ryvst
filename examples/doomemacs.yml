@@ -1,0 +1,5 @@
+every_time: 5m
+execute: ~/.config/emacs/bin/doom install
+tasks:
+  - url: https://github.com/doomemacs/core.git
+    to_dest: .config/emacs
