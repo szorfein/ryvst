@@ -42,8 +42,10 @@ Ryvst simplifies the installation of your "environment" by grabbing all the stuf
 ```sh
 git clone https://github.com/szorfein/ryvst
 cd ryvst
-go build -o ryvst cmd/ryvst/main.go
+make install
 ```
+
+No special permissions are needed. The program is installed in "$HOME/bin", so include this in your `export PATH="$PATH:$HOME/bin"`
 
 ## Usage
 
