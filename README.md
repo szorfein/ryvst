@@ -91,14 +91,14 @@ tasks:
 
 #### Something with Git?
 
-If you own a Git repository, you may prefer to use Git instead of an archive.
+If you own a Git repository or the project work's better with git
 
-    $EDITOR ~/.config/ryvst/neovim.yml
+    $EDITOR ~/.config/ryvst/lazyvim.yml
 
 ```yml
-every_time: 12h
+every_time: 24h
 tasks:
-  - url: https://github.com/szorfein/vie.git
+  - url: https://github.com/LazyVim/starter.git
     to_dest: .config/nvim
 ```
 

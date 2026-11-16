@@ -13,9 +13,10 @@ import (
 )
 
 type Tasks struct {
-	Name   string `yaml:"name"`
-	Url    string `yaml:"url"`
-	ToDest string `yaml:"to_dest"`
+	Name      string `yaml:"name"`
+	Url       string `yaml:"url"`
+	ToDest    string `yaml:"to_dest"`
+	StripComp bool   `yaml:"strip_comp"`
 }
 
 type Config struct {

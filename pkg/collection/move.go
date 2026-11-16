@@ -29,7 +29,7 @@ func MimeDetect(filename string) (string, error) {
 	return http.DetectContentType(buffer), nil
 }
 
-func ToDest(cachedir string, name string, todest string) error {
+func ToDest(cachedir string, name string, todest string, strip bool) error {
 	fp := filepath.Join(cachedir, name)
 	td := todest
 
@@ -41,7 +41,7 @@ func ToDest(cachedir string, name string, todest string) error {
 	//fmt.Println("MIMETYPE", mimefile)
 	switch mimefile {
 	case "application/zip":
-		err := extract.Unzip(fp, td)
+		err := extract.Unzip(fp, td, strip)
 		if err != nil {
 			return err
 		}
@@ -58,7 +58,7 @@ func ToDest(cachedir string, name string, todest string) error {
 		}
 	case "application/octet-stream": // octet-stream is returned when the mimetype is no found...
 		if strings.HasSuffix(name, ".tar.xz") {
-			err := extract.ExtractTarXz(fp, td)
+			err := extract.ExtractTarXz(fp, td, strip)
 			if err != nil {
 				return err
 			}

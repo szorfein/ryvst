@@ -15,7 +15,7 @@ import (
 	"ryvst/pkg/colour"
 )
 
-func Unzip(source string, dest string) error {
+func Unzip(source string, dest string, strip bool) error {
 	colour.Info(3, "Extracting %s\n", filepath.Base(source))
 
 	// 1. Open the zip file
@@ -27,7 +27,7 @@ func Unzip(source string, dest string) error {
 
 	// 2. Iterate over zip files inside the archive and unzip each of them
 	for _, f := range reader.File {
-		if err := UnzipFile(f, dest); err != nil {
+		if err := UnzipFile(f, dest, strip); err != nil {
 			return fmt.Errorf("unzip, error unzipfile: %w", err)
 		}
 	}
@@ -44,14 +44,14 @@ func ParseName(aName string) (string, error) {
 	return name, nil
 }
 
-func UnzipFile(f *zip.File, dest string) error {
+func UnzipFile(f *zip.File, dest string, strip bool) error {
 	localname, err := ParseName(f.Name)
 	if err != nil {
 		return fmt.Errorf("parse name error: %w", err)
 	}
 
 	// This remove the first folder e.g: ohmyzsh-master/ or yourplugin-main/
-	dropBase := stripComponent(localname)
+	dropBase := stripComponent(localname, strip)
 	filePath := filepath.Join(dest, dropBase)
 
 	// For debug
@@ -74,14 +74,46 @@ func UnzipFile(f *zip.File, dest string) error {
 		return fmt.Errorf("zip, basedir, fail to create: %w", err)
 	}
 
-	// 6. Create a destination file for unzipped content
+	// 6. Handle SYMLINKS
+	if f.Mode()&os.ModeSymlink != 0 {
+		zippedFile, err := f.Open()
+		if err != nil {
+			return fmt.Errorf("zip, error on f.open for symlink: %w", err)
+		}
+
+		// In zip files, the content of a symlink entry IS the target path string
+		targetBytes, err := io.ReadAll(zippedFile)
+		_ = zippedFile.Close()
+		if err != nil {
+			return fmt.Errorf("zip, error reading symlink target: %w", err)
+		}
+
+		// Create the symlink pointing to the target, remove old symlink if exist
+		if err := os.Symlink(string(targetBytes), filePath); err != nil {
+			if os.IsExist(err) {
+				// Remove the existing file/symlink so we can recreate it
+				if err := os.Remove(filePath); err != nil {
+					return fmt.Errorf("failed to remove existing symlink: %w", err)
+				}
+				// Try creating it again
+				if err := os.Symlink(string(targetBytes), filePath); err != nil {
+					return fmt.Errorf("failed to recreate symlink: %w", err)
+				}
+			} else {
+				return fmt.Errorf("zip, error creating symlink: %w", err)
+			}
+		}
+		return nil
+	}
+
+	// 7. Create a destination file for unzipped content
 	destinationFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
 	if err != nil {
 		return fmt.Errorf("zip, error on os.openfile: %w", err)
 	}
 	defer func() { _ = destinationFile.Close() }()
 
-	// 7. Unzip the content of a file and copy it to the destination file
+	// 8. Unzip the content of a file and copy it to the destination file
 	zippedFile, err := f.Open()
 	if err != nil {
 		return fmt.Errorf("zip, error on f.open: %w", err)

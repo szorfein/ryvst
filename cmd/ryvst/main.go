@@ -21,6 +21,7 @@ type Download struct {
 	ToDest    string
 	EveryTime time.Duration
 	IsGit     bool
+	StripComp bool
 	Command   string
 }
 
@@ -42,10 +43,14 @@ func loopInTask(d *[]Download, list string, config string) {
 	for _, task := range c.Tasks {
 		todest := os.Getenv("HOME") + "/" + task.ToDest
 		isGit := false
+		strip := false
 		if strings.HasSuffix(task.Url, ".git") {
 			isGit = true
 		}
-		*d = append(*d, Download{Name: task.Name, Url: task.Url, Cache: cache, ToDest: todest, EveryTime: c.EveryTime, IsGit: isGit, Command: c.Execute})
+		if task.StripComp {
+			strip = task.StripComp
+		}
+		*d = append(*d, Download{Name: task.Name, Url: task.Url, Cache: cache, ToDest: todest, EveryTime: c.EveryTime, IsGit: isGit, StripComp: strip, Command: c.Execute})
 	}
 }
 
@@ -97,9 +102,10 @@ func movingFiles(d []Download) {
 		if v.IsGit {
 			continue
 		}
-		err := collection.ToDest(v.Cache, v.Name, v.ToDest)
+		err := collection.ToDest(v.Cache, v.Name, v.ToDest, v.StripComp)
 		if err != nil {
 			fmt.Println(err)
+			os.Exit(1)
 		}
 	}
 }

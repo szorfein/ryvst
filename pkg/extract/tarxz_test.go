@@ -83,7 +83,7 @@ func TestExtractTarXz(t *testing.T) {
 
 		target := t.TempDir()
 
-		err := ExtractTarXz(source, target)
+		err := ExtractTarXz(source, target, false)
 		if err != nil {
 			t.Fatalf("ExtractTarXz failed: %v", err)
 		}
@@ -108,7 +108,7 @@ func TestExtractTarXz(t *testing.T) {
 	})
 
 	t.Run("non-existent source file", func(t *testing.T) {
-		err := ExtractTarXz("/non/existent/file.tar.xz", t.TempDir())
+		err := ExtractTarXz("/non/existent/file.tar.xz", t.TempDir(), false)
 		if err == nil {
 			t.Error("expected error for non-existent file, got nil")
 		}
@@ -130,7 +130,7 @@ func TestExtractTarXz(t *testing.T) {
 		}
 		defer func() { _ = os.Remove(tmpFile.Name()) }()
 
-		err = ExtractTarXz(tmpFile.Name(), t.TempDir())
+		err = ExtractTarXz(tmpFile.Name(), t.TempDir(), false)
 		if err == nil {
 			t.Error("expected error for invalid xz file, got nil")
 		}
@@ -154,7 +154,7 @@ func TestExtractTarXz(t *testing.T) {
 		_ = tmpFile.Close()
 		defer func() { _ = os.Remove(tmpFile.Name()) }()
 
-		err = ExtractTarXz(tmpFile.Name(), t.TempDir())
+		err = ExtractTarXz(tmpFile.Name(), t.TempDir(), false)
 		if err == nil {
 			t.Error("expected error for invalid tar archive, got nil")
 		}
@@ -187,7 +187,7 @@ func TestUntarFile(t *testing.T) {
 			t.Fatalf("failed to get next header: %v", err)
 		}
 
-		err = UntarFile(header, tr, dest)
+		err = UntarFile(header, tr, dest, false)
 		if err != nil {
 			t.Fatalf("UntarFile failed: %v", err)
 		}
@@ -220,7 +220,7 @@ func TestUntarFile(t *testing.T) {
 			t.Fatalf("failed to get next header: %v", err)
 		}
 
-		err = UntarFile(header, tr, dest)
+		err = UntarFile(header, tr, dest, false)
 		if err != nil {
 			t.Fatalf("UntarFile failed: %v", err)
 		}
@@ -253,7 +253,7 @@ func TestUntarFile(t *testing.T) {
 			t.Fatalf("failed to get next header: %v", err)
 		}
 
-		err = UntarFile(header, tr, dest)
+		err = UntarFile(header, tr, dest, false)
 		if err != nil {
 			t.Fatalf("UntarFile failed: %v", err)
 		}
@@ -277,7 +277,7 @@ func TestUntarFile(t *testing.T) {
 		}
 		reader := tar.NewReader(bytes.NewReader(nil))
 
-		err := UntarFile(header, reader, dest)
+		err := UntarFile(header, reader, dest, false)
 		if err == nil {
 			t.Error("expected error for path traversal, got nil")
 		}
@@ -296,7 +296,7 @@ func TestUntarFile(t *testing.T) {
 		}
 		reader := tar.NewReader(bytes.NewReader(nil))
 
-		err := UntarFile(header, reader, dest)
+		err := UntarFile(header, reader, dest, false)
 		if err == nil {
 			t.Error("expected error for path traversal, got nil")
 		}
@@ -315,7 +315,7 @@ func TestUntarFile(t *testing.T) {
 		reader := tar.NewReader(bytes.NewReader(nil))
 
 		// Should not return an error, just ignore and print
-		err := UntarFile(header, reader, dest)
+		err := UntarFile(header, reader, dest, false)
 		if err != nil {
 			t.Fatalf("UntarFile should not return error for unsupported type, got: %v", err)
 		}
@@ -352,7 +352,7 @@ func TestStripComponent(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := stripComponent(tt.input)
+			result := stripComponent(tt.input, false)
 			if result != tt.expected {
 				t.Errorf("stripComponent(%q) = %q, want %q", tt.input, result, tt.expected)
 			}

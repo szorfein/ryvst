@@ -14,7 +14,7 @@ import (
 )
 
 // ExtractTarXz extracts a .tar.xz file to a destination directory.
-func ExtractTarXz(source, target string) error {
+func ExtractTarXz(source, target string, strip bool) error {
 	colour.Info(3, "Extracting %s\n", filepath.Base(source))
 
 	// 1. Open the .tar.xz file
@@ -44,14 +44,14 @@ func ExtractTarXz(source, target string) error {
 		if err != nil {
 			return fmt.Errorf("tar reading error: %w", err)
 		}
-		if err := UntarFile(header, tarReader, target); err != nil {
+		if err := UntarFile(header, tarReader, target, strip); err != nil {
 			return fmt.Errorf("tarxz, error %w", err)
 		}
 	}
 	return nil
 }
 
-func UntarFile(header *tar.Header, tarReader *tar.Reader, dest string) error {
+func UntarFile(header *tar.Header, tarReader *tar.Reader, dest string, strip bool) error {
 	// 🛡️ SECURITY: Prevent Path Traversal (Zip Slip)
 	// Ensure the file path doesn't try to escape the target directory (e.g., "../../etc/passwd")
 	cleanName := filepath.Clean(header.Name)
@@ -59,7 +59,7 @@ func UntarFile(header *tar.Header, tarReader *tar.Reader, dest string) error {
 		return fmt.Errorf("illegal file path detected: %s", header.Name)
 	}
 
-	dropBase := stripComponent(cleanName)
+	dropBase := stripComponent(cleanName, strip)
 	targetPath := filepath.Join(dest, dropBase)
 
 	// For debug

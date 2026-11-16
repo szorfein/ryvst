@@ -82,7 +82,7 @@ func TestUnzip(t *testing.T) {
 		t.Fatalf("Failed to create test zip: %v", err)
 	}
 
-	err = Unzip(zipPath, extractDir)
+	err = Unzip(zipPath, extractDir, false)
 	if err != nil {
 		t.Fatalf("Unzip failed: %v", err)
 	}
@@ -120,7 +120,7 @@ func TestUnzipZipSlip(t *testing.T) {
 		t.Fatalf("Failed to create malicious zip: %v", err)
 	}
 
-	err = Unzip(zipPath, extractDir)
+	err = Unzip(zipPath, extractDir, false)
 	if err == nil {
 		t.Errorf("Expected error for zip slip, got nil")
 	}
@@ -138,7 +138,7 @@ func TestUnzipZipSlip(t *testing.T) {
 // TestUnzipFileNotFound ensures proper error handling when the source zip does not exist.
 func TestUnzipFileNotFound(t *testing.T) {
 	tempDir := t.TempDir()
-	err := Unzip(filepath.Join(tempDir, "nonexistent.zip"), filepath.Join(tempDir, "dest"))
+	err := Unzip(filepath.Join(tempDir, "nonexistent.zip"), filepath.Join(tempDir, "dest"), false)
 	if err == nil {
 		t.Errorf("Expected error for nonexistent zip file, got nil")
 	}
@@ -162,7 +162,7 @@ func TestUnzipEmpty(t *testing.T) {
 		t.Fatalf("Failed to close file: %v", err)
 	}
 
-	err = Unzip(zipPath, extractDir)
+	err = Unzip(zipPath, extractDir, false)
 	if err != nil {
 		t.Fatalf("Unzip failed on empty zip: %v", err)
 	}
