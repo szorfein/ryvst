@@ -11,9 +11,13 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"ryvst/pkg/colour"
 )
 
 func Unzip(source string, dest string) error {
+	colour.Info(3, "Extracting %s\n", filepath.Base(source))
+
 	// 1. Open the zip file
 	reader, err := zip.OpenReader(source)
 	if err != nil {
@@ -38,26 +42,6 @@ func ParseName(aName string) (string, error) {
 		return "", fmt.Errorf("non-local archive path %q", aName)
 	}
 	return name, nil
-}
-
-// Remove first directory if found suffix -main or -master
-func stripComponent(localname string) string {
-	normalizedName := filepath.ToSlash(localname)
-	//split := strings.Split(localname, string(os.PathSeparator))
-	split := strings.SplitN(normalizedName, "/", 2)
-
-	var dropBase string
-	// if len(split) == 2 {
-	if strings.HasSuffix(split[0], "-main") {
-		dropBase = filepath.FromSlash(split[1])
-		return dropBase
-	}
-	if strings.HasSuffix(split[0], "-master") {
-		dropBase = filepath.FromSlash(split[1])
-		return dropBase
-	}
-
-	return localname
 }
 
 func UnzipFile(f *zip.File, dest string) error {

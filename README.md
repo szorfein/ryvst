@@ -36,6 +36,7 @@ Ryvst simplifies the installation of your "environment" by grabbing all the stuf
 - Time units now support Seconds, Minutes and Hours
 - Supports Git (only `git clone` and `git pull`); you just need to install Git.
 - Collections can execute command, e.g: `fc-cache -f` after installing fonts.
+- Ryvst can update itself if you include the [example](https://github.com/szorfein/ryvst/blob/main/examples/ryvst.yml) in your configs.
 
 ## Use from source
 
@@ -53,9 +54,9 @@ Fill your `$HOME/.config/ryvst` directory with YAML files defining your needs, t
 
 You can automate the startup of `ryvst` by including it in your `bash_profile`, `zprofile` or your `sway` configuration...
 
-## Starting on Sway
+## Starting on i3/Sway
 
-After copying the binary in `$HOME/bin`, you can configure Sway like this:
+After copying the binary in `$HOME/bin`, you can configure i3/Sway like this:
 
 ```
 # Run once at login

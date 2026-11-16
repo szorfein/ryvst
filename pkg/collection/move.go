@@ -12,39 +12,35 @@ import (
 	"ryvst/pkg/unix"
 )
 
-func MimeDetect(filename string) string {
+func MimeDetect(filename string) (string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
-		fmt.Println("Error opening file:", err)
-		os.Exit(1)
+		return "", fmt.Errorf("error opening file: %w", err)
 	}
-	defer func() {
-		err := file.Close()
-		if err != nil {
-			fmt.Println(err)
-		}
-	}()
+
+	defer func() { _ = file.Close() }()
 
 	buffer := make([]byte, 512)
 	_, err = file.Read(buffer)
 	if err != nil {
-		fmt.Println("Error reading file:", err)
-		os.Exit(1)
+		return "", fmt.Errorf("error reading file: %w", err)
 	}
 
-	mimeType := http.DetectContentType(buffer)
-	return mimeType
+	return http.DetectContentType(buffer), nil
 }
 
 func ToDest(cachedir string, name string, todest string) error {
 	fp := filepath.Join(cachedir, name)
 	td := todest
 
-	mimefile := MimeDetect(fp)
+	mimefile, err := MimeDetect(fp)
+	if err != nil {
+		return err
+	}
+
 	//fmt.Println("MIMETYPE", mimefile)
 	switch mimefile {
 	case "application/zip":
-		colour.Info(3, "Extracting %s\n", filepath.Base(fp))
 		err := extract.Unzip(fp, td)
 		if err != nil {
 			return err
@@ -62,7 +58,7 @@ func ToDest(cachedir string, name string, todest string) error {
 		}
 	case "application/octet-stream": // octet-stream is returned when the mimetype is no found...
 		if strings.HasSuffix(name, ".tar.xz") {
-			err := unix.ExtractTarXz(fp, td)
+			err := extract.ExtractTarXz(fp, td)
 			if err != nil {
 				return err
 			}
