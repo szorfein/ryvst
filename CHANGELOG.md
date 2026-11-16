@@ -1,5 +1,6 @@
-## BETA, 0.24.0
+## BETA, 0.25.0
 
+- Nov.2026: Add test on pkg/extract/tarxz_test.go
 - Nov.2026: Add a Makefile
 - Nov.2026: Move zip under pkg/extract with unzip_test.go
 - Nov.2026: Add test on pkg/collection/cache

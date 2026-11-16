@@ -36,7 +36,7 @@ Ryvst simplifies the installation of your "environment" by grabbing all the stuf
 - Time units now support Seconds, Minutes and Hours
 - Supports Git (only `git clone` and `git pull`); you just need to install Git.
 - Collections can execute command, e.g: `fc-cache -f` after installing fonts.
-- Ryvst can update itself if you include the [example](https://github.com/szorfein/ryvst/blob/main/examples/ryvst.yml) in your configs.
+- Ryvst can update itself if you include the [example file](https://github.com/szorfein/ryvst/blob/main/examples/ryvst.yml) in your configs.
 
 ## Use from source
 
