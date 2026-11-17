@@ -88,9 +88,20 @@ func UntarFile(header *tar.Header, tarReader *tar.Reader, dest string, strip boo
 			return fmt.Errorf("failed to write file contents: %w", err)
 		}
 		_ = outFile.Close()
-	case tar.TypeSymlink: // It's a symbolic link
+	case tar.TypeSymlink: // Symbolic link, overwrite if exist
 		if err := os.Symlink(header.Linkname, targetPath); err != nil {
-			return fmt.Errorf("failed to create symlink: %w", err)
+			if os.IsExist(err) {
+				// Remove the existing file/symlink so we can recreate it
+				if err := os.Remove(targetPath); err != nil {
+					return fmt.Errorf("failed to remove existing symlink: %w", err)
+				}
+				// Try creating it again
+				if err := os.Symlink(header.Linkname, targetPath); err != nil {
+					return fmt.Errorf("failed to recreate symlink: %w", err)
+				}
+			} else {
+				return fmt.Errorf("failed to create symlink: %w", err)
+			}
 		}
 	default:
 		fmt.Printf("Ignoring unsupported file type %c in %s\n", header.Typeflag, header.Name)
